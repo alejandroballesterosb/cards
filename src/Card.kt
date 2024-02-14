@@ -3,7 +3,7 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToLong
 
-class Card(
+open class Card(
     var question: String,
     var answer: String,
     var date: String = LocalDateTime.now().toString(),
@@ -15,7 +15,7 @@ class Card(
     var interval: Long = 1L
     var nextPracticeDate = LocalDateTime.parse(date)
 
-    fun show(){
+    open fun show(){
         print(" $question (ENTER to see answer)")
         readln()
         print(" $answer (Type 0 -> Difficult 3 -> Doubt 5 -> Easy): ")
@@ -27,6 +27,7 @@ class Card(
         } while (quality != 0 && quality != 3 && quality != 5)
         update(nextPracticeDate)
     }
+
     fun details() {
         println(" eas = ${"%.2f".format(easiness)} rep = $repetitions int = $interval next = ${nextPracticeDate.toLocalDate()}")
     }

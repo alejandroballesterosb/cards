@@ -6,13 +6,23 @@ class Deck(
     val cards = mutableListOf<Card>()
 
     fun addCard(){
+        var type : Int?
         println("Adding card to deck")
+        print(" Type the type (0 -> Card 1 -> Cloze): ")
+        do{
+            type = readln().toIntOrNull()
+            if (type != 0 && type != 1)
+                print(" Please, try again (0 -> Card 1 -> Cloze): ")
+        } while (type != 0 && type != 1)
         print(" Type the question: ")
         var question = readln()
         print(" Type the answer: ")
         var answer = readln()
         if (question != null && answer != null){
-            cards.add(Card(question,answer))
+            if (type == 0)
+                cards.add(Card(question,answer))
+            else
+                cards.add(Cloze(question,answer))
             println(" Card added successfully")
         }
         else {
