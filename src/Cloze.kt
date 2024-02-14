@@ -3,9 +3,9 @@ class Cloze (
     answer: String) : Card(question, answer){
 
     override fun show(){
-        val answeraux = answer
+        val answerAux = answer
         answer = question.replace(Regex("\\*(.*?)\\*")) {answer}
         super.show()
-        answer = answeraux
+        answer = answerAux
     }
 }
