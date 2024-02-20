@@ -1,4 +1,5 @@
 import java.time.*
+import java.io.File
 
 class Deck(
     val name: String,
@@ -50,5 +51,30 @@ class Deck(
             }
             now = now.plusDays(1)
         }
+    }
+
+    fun writeCards(name: String) {
+        val file = File(name)
+
+        file.printWriter().use { out ->
+            cards.forEach { card ->
+                out.println(card.toString())
+            }
+        }
+        println("Cards have been written to $name.")
+    }
+
+    fun readCards(name: String) {
+        val file = File(name)
+        if (!file.exists()) {
+            println("File $name does not exist.")
+            return
+        }
+
+        file.forEachLine { line ->
+            cards.add(Card.fromString(line))
+        }
+
+        println("Cards have been read from $name.")
     }
 }

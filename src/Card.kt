@@ -62,4 +62,45 @@ open class Card(
             now = now.plusDays(1)
         }
     }
+
+    open fun getType(): String {
+        return "card"
+    }
+
+    override fun toString(): String {
+        return "${this.getType()} | $question | $answer | $date | $id | $easiness | $repetitions | $interval | $nextPracticeDate"
+    }
+
+    companion object {
+        fun fromString(cad: String): Card {
+            val parts = cad.split("|").map { it.trim() }
+            val instance = parts[0]
+            val question = parts[1]
+            val answer = parts[2]
+            val date = parts.getOrNull(3) ?: LocalDateTime.now().toString()
+            val id = parts.getOrNull(4) ?: UUID.randomUUID().toString()
+            val easiness = parts.getOrNull(5)?.toDoubleOrNull() ?: 2.5
+            val repetitions = parts.getOrNull(6)?.toIntOrNull() ?: 0
+            val interval = parts.getOrNull(7)?.toLongOrNull() ?: 1L
+            val nextPracticeDate = LocalDateTime.parse(parts.getOrNull(8) ?: date)
+            if (instance == "cloze") {
+                return Cloze(question, answer).apply {
+                    this.date = date
+                    this.id = id
+                    this.easiness = easiness
+                    this.repetitions = repetitions
+                    this.interval = interval
+                    this.nextPracticeDate = nextPracticeDate
+                }
+            }
+            return Card(question, answer).apply {
+                this.date = date
+                this.id = id
+                this.easiness = easiness
+                this.repetitions = repetitions
+                this.interval = interval
+                this.nextPracticeDate = nextPracticeDate
+            }
+        }
+    }
 }

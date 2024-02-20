@@ -1,3 +1,6 @@
+import java.time.*
+import java.util.*
+
 class Cloze (
     question: String,
     answer: String) : Card(question, answer){
@@ -8,4 +11,10 @@ class Cloze (
         super.show()
         answer = answerAux
     }
+
+    override fun getType(): String {
+        return "cloze"
+    }
+
+
 }
