@@ -31,6 +31,24 @@ class Deck(
         }
     }
 
+    fun removeCard() {
+        println("Removing card from deck")
+        print("Enter the question of the card to remove: ")
+        val questionToRemove = readLine()
+
+        if (questionToRemove != null) {
+            val matchingCard = cards.find { it.question == questionToRemove }
+            if (matchingCard != null) {
+                cards.remove(matchingCard)
+                println("Card with question \"$questionToRemove\" removed successfully")
+            } else {
+                println("Card with question \"$questionToRemove\" not found in the deck.")
+            }
+        } else {
+            println("Invalid input. Please try again.")
+        }
+    }
+
     fun listCards(){
         cards.forEach { card ->
             println(" ${card.question} -> ${card.answer}")
@@ -44,12 +62,18 @@ class Deck(
         for (i in 1..period + 1) {
             println("Current date: ${now.toLocalDate()}")
             for (card in cards){
-                if (card.nextPracticeDate.toLocalDate().compareTo(now.toLocalDate()) == 0){
-                    card.show()
-                    card.details()
+                if (LocalDateTime.parse(card.nextPracticeDate).toLocalDate().compareTo(now.toLocalDate()) == 0){
+                    card.step(LocalDateTime.parse(card.nextPracticeDate))
                 }
             }
             now = now.plusDays(1)
+        }
+        for (card in cards) {
+            card.nextPracticeDate = card.date
+            card.quality = null
+            card.easiness = 2.5
+            card.repetitions = 0
+            card.interval = 1L
         }
     }
 

@@ -13,7 +13,7 @@ open class Card(
     var easiness: Double = 2.5
     var repetitions: Int = 0
     var interval: Long = 1L
-    var nextPracticeDate = LocalDateTime.parse(date)
+    var nextPracticeDate = date
 
     open fun show(){
         print(" $question (ENTER to see answer)")
@@ -25,18 +25,20 @@ open class Card(
                 print("Please, try again (Type 0 -> Difficult 3 -> Doubt 5 -> Easy): ")
             }
         } while (quality != 0 && quality != 3 && quality != 5)
-        update(nextPracticeDate)
+    }
+
+    fun step(date: LocalDateTime) {
+        show()
+        update(date)
+        details()
     }
 
     fun details() {
-        println(" eas = ${"%.2f".format(easiness)} rep = $repetitions int = $interval next = ${nextPracticeDate.toLocalDate()}")
+        println(" eas = ${"%.2f".format(easiness)} rep = $repetitions int = $interval next = ${LocalDateTime.parse(nextPracticeDate).toLocalDate()}")
     }
 
     fun update(currentDate: LocalDateTime) {
-        if(quality == 0)
-            repetitions = 0
-        else
-            repetitions++
+        repetitions = if (quality == 0) 0 else repetitions + 1
 
         easiness = max(1.3, easiness + 0.1 - (5 - quality!!)*(0.08 + (5-quality!!)*0.02))
 
@@ -46,7 +48,7 @@ open class Card(
             else -> (interval * easiness).roundToLong()
         }
 
-        nextPracticeDate = currentDate.plusDays(interval)
+        nextPracticeDate = currentDate.plusDays(interval).toString()
     }
 
     fun simulate(period: Long) {
@@ -55,9 +57,8 @@ open class Card(
 
         for (i in 1..period + 1) {
             println("Date: ${now.toLocalDate()}")
-            if (nextPracticeDate.toLocalDate().compareTo(now.toLocalDate()) == 0){
-                show()
-                details()
+            if (LocalDateTime.parse(nextPracticeDate).toLocalDate().compareTo(now.toLocalDate()) == 0){
+                step(LocalDateTime.parse(nextPracticeDate))
             }
             now = now.plusDays(1)
         }
@@ -82,7 +83,7 @@ open class Card(
             val easiness = parts.getOrNull(5)?.toDoubleOrNull() ?: 2.5
             val repetitions = parts.getOrNull(6)?.toIntOrNull() ?: 0
             val interval = parts.getOrNull(7)?.toLongOrNull() ?: 1L
-            val nextPracticeDate = LocalDateTime.parse(parts.getOrNull(8) ?: date)
+            val nextPracticeDate = parts.getOrNull(8) ?: LocalDateTime.now().toString()
             if (instance == "cloze") {
                 return Cloze(question, answer).apply {
                     this.date = date
